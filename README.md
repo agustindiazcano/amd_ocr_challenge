@@ -31,6 +31,32 @@ The AMD evaluation environment imposes strict hardware and execution limits. Thi
 - `Dockerfile`: Container definition strictly adhering to the AMD evaluation runtime.
 - `requirements.txt`: Python dependencies.
 
+## How to Run (Runbook)
+
+### 1. Build the Docker Image
+```bash
+docker build -t agustindiazcano/amd-ocr-challenge:v1 .
+```
+
+### 2. Run Local Inference
+The application reads an input image and writes a JSON output file. Use volumes to map your local images and output directories to the container.
+
+```bash
+docker run --rm \
+  --device=/dev/kfd --device=/dev/dri \
+  -v $(pwd)/local_test_images:/app/input \
+  -v $(pwd)/output:/app/output \
+  agustindiazcano/amd-ocr-challenge:v1 \
+  python app.py --input-image /app/input/sample.jpg
+```
+*(Note: Omit `--device=/dev/kfd --device=/dev/dri` if running CPU-only without AMD ROCm hardware).*
+
+### 3. Output Format
+The resulting JSON file will be created in your local `output/` folder (e.g., `sample_output.json`) following the exact challenge format:
+```json
+{"text": "京A12345", "confidence": 1.0}
+```
+
 ## Author
 
 **Agustin Diaz-Cano**  
