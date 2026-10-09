@@ -17,11 +17,11 @@ The primary focus of all code is rigorous engineering, hardware optimization, st
 - **Objective:** Robust OCR pipeline using Qwen2-VL-2B-Instruct for text extraction in hostile images.
 - **Implemented Techniques:** `bfloat16` precision, VRAM control with static tensors, Regex post-processing engine to ensure a deterministic JSON output.
 
-### `/03_enterprise_rag` (Status: In Development - Current Focus)
+### `/03_enterprise_rag` (Status: Completed)
 - **Objective:** Enterprise RAG engine capable of ingesting and answering queries on a mixed corpus of files (.pdf, .docx, .xlsx, .csv, .txt, .log, .py, .png, .jpg).
-- **Mandatory Architecture:** Since the evaluator invokes `python app.py` as a completely new process for each question, loading the model in every iteration exhausts the 30-second limit. **A Client-Server architecture (daemon / UNIX socket / local API) must be implemented** where the model resides in a persistent background process and `app.py` acts as a thin client.
-- **Citation Rule:** Strict causal necessity. A document is only cited if removing it makes it impossible to answer the question. Citing for mere "thematic relevance" ruins the score.
-- **Fault Tolerance:** The indexer must bypass empty directories, files with `chmod 000` (without `DAC_OVERRIDE`), encrypted files, and unknown formats without throwing fatal exceptions or halting execution.
+- **Architecture:** Client-Server architecture (FastAPI daemon / Thin Client CLI) to maintain the VLM model and SQLite index in VRAM, bypassing the 30s evaluation execution limit per query.
+- **Retrieval & Citation:** Strict SQLite FTS5 BM25 deterministic retrieval with causal necessity rules applied via strict prompting and Regex outputs.
+- **Fault Tolerance:** Robust exception handling to bypass empty directories, `chmod 000` files without `DAC_OVERRIDE`, and encrypted PDFs without halting execution.
 
 ## Instructions for the Code Assistant
 1. Write deterministic, modular, and strongly typed code.

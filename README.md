@@ -61,10 +61,38 @@ docker run --rm \
 
 **Folder:** `03_enterprise_rag/`
 
-*(Upcoming / Next Phase)* 
-This section of the repository will host the Retrieval-Augmented Generation (RAG) engine designed for the third phase of the challenge. Similar to the OCR pipeline, this architecture is strictly designed to operate within the 48GB VRAM and <30s execution constraints on AMD ROCm platforms.
+The objective of this project is to build an Enterprise Retrieval-Augmented Generation (RAG) engine capable of ingesting a mixed corpus of internal documents (.pdf, .docx, .xlsx, .csv, .txt, .log, .py, .png, .jpg) and answering extremely precise queries under a strict 30-second inference limit per question.
 
-More documentation will be added here as the development of the RAG engine progresses.
+### Approach: Client-Server Architecture + Deterministic RAG
+Because the evaluator executes the `app.py` script repeatedly as a completely new process for each query, loading the model at every execution would immediately violate the 30-second limit. We solve this by implementing a **Client-Server architecture**:
+- **Daemon (`daemon.py`)**: A persistent FastAPI server runs in the background holding the VLM (`Qwen2-VL-2B-Instruct`) and a local `SQLite FTS5` index in memory.
+- **Thin Client (`app.py`)**: A lightweight CLI script that passes the evaluator's arguments directly to the daemon via HTTP and reliably writes the JSON output.
+
+### Technologies
+- **Frameworks**: FastAPI, PyTorch, Hugging Face Transformers, SQLite FTS5, pdfplumber, openpyxl, python-docx.
+- **Platform**: AMD ROCm (Radeon Open Compute).
+- **Infrastructure**: Docker.
+
+### Technical Constraints & Optimizations
+- **Memory Limit (48 GB VRAM)**: We enforce strict VRAM pre-allocation with fixed array shapes (`max_length=2048`) to maintain a static execution graph, eliminating dynamic memory spikes. Explicit garbage collection (`torch.cuda.empty_cache()`) clears any visual tensors post-inference.
+- **Causal Citations**: The system implements a strict causal necessity rule for citations. A document is only cited if removing it makes the answer impossible. The FTS5 index relies purely on deterministic lexical search (BM25) over abstract vectors to ensure no "hallucinated" citations.
+- **Fault-Tolerance (Corpus Traps)**: The indexing engine is fortified against deliberate evaluator traps. It silently logs and bypasses completely empty directories, unrecognized binary formats, files lacking read permissions (`chmod 000` dropped via `DAC_OVERRIDE`), and password-protected encrypted PDFs, without crashing or halting the pipeline.
+- **Strict Evaluator Dependencies**: Deep learning packages (`transformers`, `qwen-vl-utils`) are strictly installed using `--no-deps` to prevent standard `pip` from silently overwriting the mandated ROCm PyTorch base with an incompatible CUDA build.
+
+### How to Run (Runbook)
+**1. Build the Docker Image**
+```bash
+cd 03_enterprise_rag
+docker build -t agustindiazcano/amd-rag-challenge:v1 .
+```
+
+**2. Run Local Evaluation Simulation**
+You can run the simulated hostile environment directly:
+```bash
+cd 03_enterprise_rag
+python test_traps.py
+```
+This script will assemble a hostile corpus with unreadable files, start the daemon, perform the 10-minute indexing pass, run an isolated query passing the 30-second strict limit, and evaluate the fallback resilience.
 
 ---
 
