@@ -69,3 +69,7 @@ More documentation will be added here as the development of the RAG engine progr
 
 **Agustin Diaz-Cano**  
 *MS Candidate, Information Systems Engineering*
+
+
+---
+*These projects are official submissions for the [AMD & LabLab AI Academy Challenge](https://lablab.ai/ai-hackathons/amd-lablab-ai-academy-challenge).*
