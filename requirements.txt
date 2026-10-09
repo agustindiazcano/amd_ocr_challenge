@@ -1,2 +1,6 @@
 Pillow
 numpy
+transformers
+accelerate
+qwen-vl-utils
+torch
