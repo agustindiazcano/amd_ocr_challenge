@@ -5,7 +5,10 @@ This repository contains two independent projects developed for the AMD AI Chall
 ## Table of Contents
 1. [02: VLM OCR Pipeline](#02-vlm-ocr-pipeline)
 2. [03: Enterprise RAG Engine](#03-enterprise-rag-engine)
-3. [Author](#author)
+3. [04: Intelligent Web Information Retrieval](#04-intelligent-web-information-retrieval)
+4. [05: AI-Powered Code Repository Repair](#05-ai-powered-code-repository-repair)
+5. [06: Can Your AI Master the Unknown](#06-can-your-ai-master-the-unknown)
+6. [Author](#author)
 
 ---
 
@@ -62,6 +65,30 @@ docker run --rm \
 This section of the repository will host the Retrieval-Augmented Generation (RAG) engine designed for the third phase of the challenge. Similar to the OCR pipeline, this architecture is strictly designed to operate within the 48GB VRAM and <30s execution constraints on AMD ROCm platforms.
 
 More documentation will be added here as the development of the RAG engine progresses.
+
+---
+
+## 04: Intelligent Web Information Retrieval
+
+**Folder:** `04_intelligent_web_information_retrieval/`
+
+*(Upcoming)* Details for the fourth phase of the challenge will be placed here.
+
+---
+
+## 05: AI-Powered Code Repository Repair
+
+**Folder:** `05_ai_powered_code_repository_repair/`
+
+*(Upcoming)* Details for the fifth phase of the challenge will be placed here.
+
+---
+
+## 06: Can Your AI Master the Unknown
+
+**Folder:** `06_can_your_ai_master_the_unknown/`
+
+*(Upcoming)* Details for the sixth and final phase of the challenge will be placed here.
 
 ---
 
