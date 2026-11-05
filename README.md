@@ -123,7 +123,7 @@ This script will assemble a hostile corpus with unreadable files, start the daem
 ## Author
 
 **Agustin Diaz-Cano**  
-*MS Candidate, Information Systems Engineering*
+*MS Candidate, Systems Engineering*
 
 
 ---
